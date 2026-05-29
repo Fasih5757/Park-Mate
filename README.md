@@ -78,7 +78,7 @@ Example:
 ## Demo Video
 
 
-[Watch Demo Video]([https://your-demo-video-link.com](https://drive.google.com/file/d/1d3-dS9pxcd4uVHX4uLXM7zAlvmY0yloe/view?usp=sharing))
+[Watch Demo Video](https://drive.google.com/file/d/1d3-dS9pxcd4uVHX4uLXM7zAlvmY0yloe/view?usp=sharing)
 
 ---
 
