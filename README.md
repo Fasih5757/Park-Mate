@@ -11,13 +11,7 @@ Park Mate is an Android-based smart parking application developed to help users 
 
 ## App Screenshots
 
-Add screenshots of your application screens inside the `screenshots` folder.
-
-Example:
-
-| Splash Screen | Home Screen | Map Screen |
-|--------------|-------------|-------------|
-| ![Splash](screenshots/splash_screen.png) | ![Home](screenshots/home_screen.png) | ![Map](screenshots/map_screen.png) |
+| ![Login](Screenshots/login.jpg) | ![Logo](Screenshots/logo.jpg) | ![onboarding](Screenshots/onboarding2.jpg) | ![parking](Screenshots/parking.jpg) | ![setting](Screenshots/setting.jpg) | ![signup](Screenshots/singup.jpg)
 
 ---
 
@@ -50,7 +44,7 @@ Example:
 ## APK Download
 
 
-[Download APK](Apk)
+[Download APK](APK/Park_Mate.apk)
 
 ---
 
@@ -109,8 +103,5 @@ View the application privacy policy here:
 BSITMA-23-09  
 Department of Information Technology  
 University of Layyah  
-
-GitHub: Add Your GitHub Profile Link  
-LinkedIn: Add Your LinkedIn Profile Link
 
 ---
