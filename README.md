@@ -50,7 +50,7 @@ Example:
 ## APK Download
 
 
-[Download APK](Apk/Park Mate.apk)
+[Download APK](Apk)
 
 ---
 
@@ -86,7 +86,7 @@ Example:
 
 View the application privacy policy here:
 
-[View Privacy Policy](Docs/Privacy_Policy.docx)
+[View Privacy Policy](docs/Privacy_Policy.pdf)
 
 ---
 
