@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tvClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:gravity="center"
+            android:text="@string/close"
+            android:textColor="@color/primary"
+            android:textSize="16sp"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/settings"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:gravity="center"/>
+
+        <View
+            android:layout_width="48dp"
+            android:layout_height="48dp"/>
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Log Parking Toggle -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/log_parking_default"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/log_parking_desc"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary"/>
+
+                </LinearLayout>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchLogParking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:contentDescription="@string/log_parking_default"/>
+
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="@color/divider" android:layout_marginVertical="12dp"/>
+
+            <!-- Map Display Mode -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/map_mode_desc"
+                android:textSize="13sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginBottom="8dp"/>
+
+            <RadioGroup
+                android:id="@+id/rgMapMode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <RadioButton android:id="@+id/rbStandard"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/standard"
+                    android:checked="true"
+                    android:buttonTint="@color/primary"/>
+
+                <RadioButton android:id="@+id/rbSatellite"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/satellite"
+                    android:buttonTint="@color/primary"/>
+
+                <RadioButton android:id="@+id/rbHybrid"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/hybrid"
+                    android:buttonTint="@color/primary"/>
+
+            </RadioGroup>
+
+            <!-- Distance Units -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/distance_units_desc"
+                android:textSize="13sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginBottom="8dp"/>
+
+            <RadioGroup
+                android:id="@+id/rgUnits"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <RadioButton android:id="@+id/rbSystem"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/system_unit"
+                    android:checked="true"
+                    android:buttonTint="@color/primary"/>
+
+                <RadioButton android:id="@+id/rbMetric"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/metric"
+                    android:buttonTint="@color/primary"/>
+
+                <RadioButton android:id="@+id/rbImperial"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/imperial"
+                    android:buttonTint="@color/primary"/>
+
+            </RadioGroup>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="@color/divider" android:layout_marginVertical="12dp"/>
+
+            <!-- Settings Items -->
+            <LinearLayout android:id="@+id/itemHistory"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:padding="12dp" android:clickable="true" android:focusable="true">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="@string/remove_history"
+                    android:textSize="15sp" android:textColor="@color/text_primary"/>
+                <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                    android:src="@drawable/remove_history"
+                    android:contentDescription="@string/delete"/>
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/itemNotifications"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:padding="12dp" android:clickable="true" android:focusable="true">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="@string/notifications"
+                    android:textSize="15sp" android:textColor="@color/text_primary"/>
+                <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                    android:src="@drawable/notification"
+                    android:contentDescription="@string/notifications"/>
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/itemLanguage"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:padding="12dp" android:clickable="true" android:focusable="true">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="@string/language"
+                    android:textSize="15sp" android:textColor="@color/text_primary"/>
+                <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                    android:src="@drawable/language"
+                    android:contentDescription="@string/language"/>
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/itemTheme"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:padding="12dp" android:clickable="true" android:focusable="true">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="@string/theme"
+                    android:textSize="15sp" android:textColor="@color/text_primary"/>
+                <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                    android:src="@drawable/theme"
+                    android:contentDescription="@string/theme"/>
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/itemReview"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:padding="12dp" android:clickable="true" android:focusable="true">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="@string/write_review"
+                    android:textSize="15sp" android:textColor="@color/text_primary"/>
+                <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                    android:src="@drawable/review"
+                    android:contentDescription="@string/review"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

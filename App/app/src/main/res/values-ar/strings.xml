@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">بارك ميت</string>
+    <string name="settings">الإعدادات</string>
+    <string name="parking_history">سجل المواقف</string>
+    <string name="log_parking_default">تسجيل الموقف تلقائياً</string>
+    <string name="theme">المظهر</string>
+    <string name="language">اللغة</string>
+    <string name="notifications">الإشعارات</string>
+    <string name="standard">قياسي</string>
+    <string name="satellite">قمر صناعي</string>
+    <string name="hybrid">هجين</string>
+    <string name="close">إغلاق</string>
+    <string name="park">ركن</string>
+    <string name="done">تم</string>
+    <string name="locate">تحديد موقع</string>
+    <string name="navigate">تنقل</string>
+</resources>

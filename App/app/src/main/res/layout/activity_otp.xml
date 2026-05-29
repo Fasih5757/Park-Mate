@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/ivBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="4dp"
+        android:src="@android:drawable/ic_media_previous"
+        android:layout_marginBottom="32dp"
+        android:contentDescription="@string/back_desc"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/check_your_phone"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/otp_sent_msg"
+        android:textSize="14sp"
+        android:textColor="@color/text_secondary"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/tvEmailHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_otp_hint"
+        android:textSize="13sp"
+        android:textColor="@color/text_hint"
+        android:layout_marginBottom="32dp"/>
+
+    <!-- OTP Input Boxes -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="16dp">
+
+        <EditText android:id="@+id/otp1"
+            style="@style/OtpBox"
+            android:autofillHints="smsOTPCode"
+            android:hint="@string/otp_hint_dash" />
+        <EditText android:id="@+id/otp2"
+            style="@style/OtpBox"
+            android:autofillHints="smsOTPCode"
+            android:hint="@string/otp_hint_dash" />
+        <EditText android:id="@+id/otp3"
+            style="@style/OtpBox"
+            android:autofillHints="smsOTPCode"
+            android:hint="@string/otp_hint_dash" />
+        <EditText android:id="@+id/otp4"
+            style="@style/OtpBox"
+            android:autofillHints="smsOTPCode"
+            android:hint="@string/otp_hint_dash" />
+        <EditText android:id="@+id/otp5"
+            style="@style/OtpBox"
+            android:autofillHints="smsOTPCode"
+            android:hint="@string/otp_hint_dash" />
+        <EditText android:id="@+id/otp6"
+            style="@style/OtpBox"
+            android:autofillHints="smsOTPCode"
+            android:hint="@string/otp_hint_dash" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvResend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:gravity="center_vertical"
+        android:text="@string/resend_code"
+        android:textColor="@color/primary"
+        android:textSize="14sp"
+        android:layout_marginBottom="32dp"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    <Button
+        android:id="@+id/btnVerify"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="@string/verify"
+        android:background="@drawable/bg_button_primary"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+</LinearLayout>

@@ -1,0 +1,28 @@
+<!--
+  ~ Copyright (C) 2026 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <group>
+    <clip-path
+        android:pathData="M0,0h24v24h-24z"/>
+    <path
+        android:pathData="M20.848,13.266C20.848,12.905 20.969,12.543 20.969,12.06C20.969,11.578 20.969,11.216 20.848,10.854L23.381,8.804C23.622,8.563 23.622,8.322 23.501,8.08L21.089,3.859C20.969,3.739 20.728,3.618 20.366,3.739L17.351,4.945C16.748,4.462 16.024,4.101 15.3,3.739L14.818,0.603C14.939,0.241 14.577,0 14.336,0H9.512C9.27,0 8.908,0.241 8.908,0.482L8.426,3.739C7.702,3.98 7.099,4.462 6.376,4.945L3.481,3.739C3.12,3.618 2.878,3.739 2.637,3.98L0.225,8.201C0.104,8.322 0.225,8.683 0.466,8.925L2.999,10.854C2.999,11.216 2.878,11.578 2.878,12.06C2.878,12.543 2.878,12.905 2.999,13.266L0.466,15.317C0.225,15.558 0.225,15.799 0.346,16.04L2.758,20.261C2.878,20.382 3.119,20.503 3.481,20.382L6.496,19.176C7.099,19.658 7.823,20.02 8.547,20.382L9.029,23.518C9.029,23.759 9.27,24 9.632,24H14.456C14.697,24 15.059,23.759 15.059,23.518L15.542,20.382C16.265,20.02 16.989,19.658 17.592,19.176L20.607,20.382C20.848,20.503 21.21,20.382 21.331,20.141L23.743,15.92C23.863,15.678 23.863,15.317 23.622,15.196L20.848,13.266ZM11.924,16.281C9.632,16.281 7.702,14.352 7.702,12.06C7.702,9.769 9.632,7.839 11.924,7.839C14.215,7.839 16.145,9.769 16.145,12.06C16.145,14.352 14.215,16.281 11.924,16.281Z"
+        android:fillColor="#3737B2"/>
+  </group>
+</vector>

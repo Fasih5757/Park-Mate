@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Park Mate Map</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        html, body, #map { height: 100%; margin: 0; padding: 0; }
+        .custom-marker {
+            background-color: #3F51B5;
+            border: 2px solid white;
+            border-radius: 50%;
+            width: 12px;
+            height: 12px;
+        }
+        .leaflet-control-zoom {
+            margin-bottom: 120px !important;
+            margin-right: 20px !important;
+        }
+    </style>
+    <!-- Add Leaflet Routing Machine -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        if (typeof L === 'undefined') {
+            document.body.innerHTML =
+                '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:sans-serif;padding:16px;text-align:center;">' +
+                'Map libraries failed to load. Please check your internet connection and try again.' +
+                '</div>';
+            throw new Error('Leaflet failed to load');
+        }
+
+        var map = L.map('map', {
+            zoomControl: false
+        }).setView([40.7128, -74.0060], 13); // Default to NYC
+
+        L.control.zoom({
+            position: 'bottomright'
+        }).addTo(map);
+
+        var userPosition = [40.7128, -74.0060];
+        var routingControl = null;
+        var parkedMarker = null;
+        var userMarker = null;
+        var parkingMarkers = [];
+
+        var parkedCarIcon = L.divIcon({
+            html: '<div style="background:#3D3BDB;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,0.25);">🚗</div>',
+            className: '',
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+        });
+
+        var parkingSpotIcon = L.divIcon({
+            html: '<div style="background:#fff;color:#3D3BDB;border:2px solid #3D3BDB;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;box-shadow:0 2px 8px rgba(0,0,0,0.25);">P</div>',
+            className: '',
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+        });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map).on('tileerror', function() {
+            console.warn('Map tiles failed to load');
+        });
+
+        function clearParkingMarkers() {
+            parkingMarkers.forEach(function(m) { map.removeLayer(m); });
+            parkingMarkers = [];
+        }
+
+        function suggestNearbyParking(lat, lng) {
+            clearParkingMarkers();
+            // Simulate finding nearby parking lots within ~500m
+            var nearby = [
+                {lat: lat + 0.002, lng: lng + 0.001, name: "City Plaza Parking"},
+                {lat: lat - 0.001, lng: lng + 0.003, name: "Underground Lot B"},
+                {lat: lat + 0.003, lng: lng - 0.002, name: "Green Park Garage"}
+            ];
+
+            nearby.forEach(function(spot) {
+                var m = L.marker([spot.lat, spot.lng], {icon: parkingSpotIcon}).addTo(map)
+                    .on('click', function() {
+                        if (window.AndroidBridge && window.AndroidBridge.onParkingSpotSelected) {
+                            window.AndroidBridge.onParkingSpotSelected(spot.name, spot.lat, spot.lng);
+                        }
+                    });
+                parkingMarkers.push(m);
+            });
+        }
+
+        function updateUserLocation(centerMap) {
+            if (!navigator.geolocation) {
+                console.error("Geolocation is not supported by this browser.");
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(function(position) {
+                userPosition = [position.coords.latitude, position.coords.longitude];
+                if (userMarker) {
+                    map.removeLayer(userMarker);
+                }
+                userMarker = L.circle(userPosition, {
+                    radius: 50,
+                    color: '#3F51B5',
+                    fillColor: '#3F51B5',
+                    fillOpacity: 0.3
+                }).addTo(map);
+
+                if (centerMap) {
+                    map.setView(userPosition, 16);
+                    suggestNearbyParking(userPosition[0], userPosition[1]);
+                }
+            }, function(error) {
+                console.warn('ERROR(' + error.code + '): ' + error.message);
+            }, {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            });
+        }
+
+        // Initial location fetch
+        updateUserLocation(true);
+
+        window.setMapMode = function(mode) {
+            // Standard OSM vs Satellite/Hybrid would ideally use different tile layers
+            // For this demo, we can simulate with grayscale or different providers if available
+            // In a real Google Maps impl, this would be map.setMapType()
+            console.log("Map mode changed to: " + mode);
+            if (mode === 'satellite' || mode === 'hybrid') {
+                // Using an alternative satellite-friendly tile provider for demonstration
+                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Tiles &copy; Esri'
+                }).addTo(map);
+            } else {
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+            }
+        };
+
+        window.setActiveParking = function(active) {
+            if (parkedMarker) {
+                map.removeLayer(parkedMarker);
+                parkedMarker = null;
+            }
+            if (!active || active.lat == null || active.lng == null) {
+                if (routingControl) {
+                    map.removeControl(routingControl);
+                    routingControl = null;
+                }
+                return;
+            }
+            parkedMarker = L.marker([active.lat, active.lng], {icon: parkedCarIcon}).addTo(map).bindPopup(
+                "Parked at " + (active.name || "selected location")
+            );
+        };
+
+        window.locateParkedCar = function(active) {
+            if (!active || active.lat == null || active.lng == null) {
+                return;
+            }
+            if (routingControl) {
+                map.removeControl(routingControl);
+            }
+
+            routingControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(userPosition[0], userPosition[1]),
+                    L.latLng(active.lat, active.lng)
+                ],
+                router: L.Routing.osrmv1({
+                    serviceUrl: 'https://router.project-osrm.org/route/v1'
+                }),
+                lineOptions: {
+                    styles: [{color: '#0A84FF', weight: 6}]
+                },
+                addWaypoints: false,
+                draggableWaypoints: false,
+                fitSelectedRoutes: true,
+                show: false // Hide the instruction panel
+            }).addTo(map);
+
+            routingControl.on('routesfound', function(e) {
+                var routes = e.routes;
+                var summary = routes[0].summary;
+                var distKm = (summary.totalDistance / 1000).toFixed(2);
+                if (window.AndroidBridge && window.AndroidBridge.onDistanceCalculated) {
+                    window.AndroidBridge.onDistanceCalculated(distKm);
+                }
+            });
+        };
+
+        // Center map on current user location
+        window.locateUser = function() {
+            updateUserLocation(true);
+        };
+    </script>
+</body>
+</html>

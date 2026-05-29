@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+    <application
+        android:name=".ParkMateApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="Park Mate"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
+        android:theme="@style/Theme.ParkMate">
+
+        <activity android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".OnboardingActivity"/>
+        <activity android:name=".SignInActivity"/>
+        <activity android:name=".SignUpActivity"/>
+        <activity android:name=".ForgotPasswordActivity"/>
+        <activity android:name=".HomeActivity"/>
+        <activity android:name=".ParkDetailsActivity"/>
+        <activity android:name=".SettingsActivity"/>
+        <activity android:name=".HistoryActivity"/>
+        <activity android:name=".NotificationsActivity"/>
+        <activity android:name=".LanguageActivity"/>
+        <activity android:name=".ThemeActivity"/>
+        <activity android:name=".OtpActivity"/>
+        <activity android:name=".NewPasswordActivity"/>
+    </application>
+</manifest>

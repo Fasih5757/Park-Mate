@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>MapApp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <!-- MapLibre CSS -->
+    <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+        :root {
+          --primary: #1a73e8;
+          --surface: #ffffff;
+          --on-surface: #3c4043;
+          --secondary-text: #70757a;
+          --shadow: 0 1px 3px 0 rgba(0,0,0,0.2), 0 4px 8px 3px rgba(0,0,0,0.1);
+          --radius: 24px;
+        }
+
+        body { margin: 0; padding: 0; font-family: 'Google Sans', sans-serif; overflow: hidden; background: #e8eaed; }
+        #map { width: 100%; height: 100vh; }
+
+        /* Responsive Search Header */
+        .header-container {
+          position: absolute;
+          top: calc(12px + env(safe-area-inset-top, 32px));
+          left: 0; right: 0;
+          padding: 0 16px;
+          z-index: 10;
+          pointer-events: none;
+          display: flex;
+          justify-content: center;
+        }
+
+        .search-box {
+          background: var(--surface);
+          height: 48px;
+          border-radius: var(--radius);
+          display: flex;
+          align-items: center;
+          padding: 0 16px;
+          box-shadow: var(--shadow);
+          pointer-events: auto;
+          max-width: 500px;
+          width: 100%;
+          box-sizing: border-box;
+          position: relative;
+        }
+
+        .suggestions-container {
+          position: absolute;
+          top: 54px;
+          left: 0;
+          right: 0;
+          background: var(--surface);
+          border-radius: 16px;
+          box-shadow: var(--shadow);
+          display: none;
+          flex-direction: column;
+          overflow: hidden;
+          z-index: 100;
+        }
+
+        .suggestion-item {
+          padding: 12px 16px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          cursor: pointer;
+          border-bottom: 1px solid #f1f3f4;
+        }
+
+        .suggestion-item:last-child { border-bottom: none; }
+        .suggestion-item:active { background: #f1f3f4; }
+        .suggestion-item .material-icons { color: #5f6368; font-size: 20px; }
+        .suggestion-text {
+          flex: 1;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-size: 14px;
+          color: var(--on-surface);
+        }
+
+        .search-box input {
+          flex: 1;
+          border: none;
+          outline: none;
+          font-size: 16px;
+          color: var(--on-surface);
+          background: transparent;
+        }
+
+        .icon-btn { color: #5f6368; cursor: pointer; padding: 8px; display: flex; align-items: center; }
+
+        /* Floating Controls */
+        .side-controls {
+          position: absolute;
+          bottom: calc(24px + env(safe-area-inset-bottom, 16px) + 80px); /* Positioned above bottom sheets */
+          right: 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          z-index: 5;
+        }
+
+        .fab {
+          width: 56px; height: 56px;
+          background: var(--surface);
+          border-radius: 16px;
+          display: flex; align-items: center; justify-content: center;
+          box-shadow: var(--shadow);
+          cursor: pointer; color: var(--primary);
+        }
+
+        /* Bottom Sheets */
+        .sheet {
+          position: absolute;
+          bottom: 0; left: 0; right: 0;
+          background: var(--surface);
+          border-radius: 24px 24px 0 0;
+          box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+          z-index: 20;
+          transform: translateY(100%);
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          padding: 16px 24px calc(24px + env(safe-area-inset-bottom, 16px));
+          max-width: 600px;
+          margin: 0 auto;
+        }
+        .sheet.open { transform: translateY(0); }
+
+        .sheet-handle { width: 32px; height: 4px; background: #dadce0; border-radius: 2px; margin: 0 auto 16px; }
+
+        .info-title { font-size: 22px; font-weight: 500; color: var(--on-surface); margin-bottom: 4px; }
+        .info-sub { color: var(--secondary-text); font-size: 14px; margin-bottom: 20px; }
+
+        .route-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 24px; }
+        .time-text { font-size: 28px; font-weight: 500; color: #1e8e3e; }
+        .dist-text { font-size: 18px; color: var(--secondary-text); }
+
+        .btn-row { display: flex; gap: 12px; }
+        .btn {
+          flex: 1; height: 48px; border-radius: 24px; border: none;
+          font-weight: 500; font-size: 15px;
+          display: flex; align-items: center; justify-content: center; gap: 8px;
+          cursor: pointer;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: #f1f3f4; color: var(--primary); }
+
+        /* Markers */
+        .marker-origin { width: 14px; height: 14px; background: white; border: 3px solid var(--primary); border-radius: 50%; box-shadow: 0 0 4px rgba(0,0,0,0.3); }
+        .marker-dest { color: #d93025; font-size: 40px !important; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+
+        #loading { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .spinner { width: 36px; height: 36px; border: 4px solid #f3f3f3; border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(200%); background: #323232; color: white; padding: 12px 24px; border-radius: 24px; font-size: 14px; z-index: 2000; transition: transform 0.3s; }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        .maplibregl-ctrl-attrib { display: none; }
+    </style>
+</head>
+<body>
+
+<div id="loading"><div class="spinner"></div></div>
+<div id="toast" class="toast"></div>
+
+<div id="map"></div>
+
+<div class="header-container">
+    <div class="search-box">
+        <input type="text" placeholder="Search destination" id="searchInput" autocomplete="off">
+        <span class="material-icons icon-btn" id="clearBtn" style="display:none;">close</span>
+        <span class="material-icons icon-btn" id="searchBtn">search</span>
+        <div id="suggestions" class="suggestions-container"></div>
+    </div>
+</div>
+
+<div class="side-controls">
+    <div class="fab" id="zoomInBtn"><span class="material-icons">add</span></div>
+    <div class="fab" id="zoomOutBtn"><span class="material-icons">remove</span></div>
+    <div class="fab" id="layerBtn"><span class="material-icons">layers</span></div>
+    <div class="fab" id="locateBtn"><span class="material-icons">my_location</span></div>
+</div>
+
+<div class="sheet" id="placeSheet">
+    <div class="sheet-handle"></div>
+    <div class="info-title" id="placeName">Dropped Pin</div>
+    <div class="info-sub" id="placeAddr">Loading...</div>
+    <div class="btn-row">
+        <button class="btn btn-primary" id="getDirections"><span class="material-icons">directions</span>Directions</button>
+        <button class="btn btn-secondary" onclick="resetApp()">Close</button>
+    </div>
+</div>
+
+<div class="sheet" id="routeSheet">
+    <div class="sheet-handle"></div>
+    <div class="route-row">
+        <span class="time-text" id="routeTime">-- min</span>
+        <span class="dist-text" id="routeDist">-- km</span>
+    </div>
+    <div class="btn-row">
+        <button class="btn btn-primary" onclick="startNav()"><span class="material-icons">navigation</span>Start</button>
+        <button class="btn btn-secondary" onclick="resetApp()">Clear</button>
+    </div>
+</div>
+
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+
+<script>
+    let points = [];
+    let markers = [];
+    let navMode = false;
+
+    const map = new maplibregl.Map({
+      container: 'map',
+      style: {
+        version: 8,
+        sources: {
+          'osm': { type: 'raster', tiles: ['https://a.tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize: 256 },
+          'labels': { type: 'raster', tiles: ['https://a.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}.png'], tileSize: 256 }
+        },
+        layers: [
+          { id: 'osm', type: 'raster', source: 'osm' },
+          { id: 'labels', type: 'raster', source: 'labels' }
+        ]
+      },
+      center: [71.5249, 30.1575], zoom: 12, attributionControl: false
+    });
+
+    const geolocate = new maplibregl.GeolocateControl({ trackUserLocation: true, showUserHeading: true });
+    map.addControl(geolocate);
+    document.getElementById('locateBtn').onclick = () => geolocate.trigger();
+
+    document.getElementById('zoomInBtn').onclick = () => map.zoomIn();
+    document.getElementById('zoomOutBtn').onclick = () => map.zoomOut();
+
+    let isSat = false;
+    document.getElementById('layerBtn').onclick = () => {
+      isSat = !isSat;
+      const url = isSat ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}' : 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png';
+      map.getSource('osm').setTiles([url]);
+    };
+
+    map.on('click', async (e) => {
+      if (navMode) return;
+      if (points.length >= 2) resetApp();
+
+      const ll = [e.lngLat.lng, e.lngLat.lat];
+      points.push(ll);
+
+      const el = document.createElement('div');
+      if (points.length === 1) {
+        el.className = 'marker-origin';
+        showPlace(ll);
+      } else {
+        el.innerHTML = '<span class="material-icons marker-dest">location_on</span>';
+        fetchRoute(points[0], points[1]);
+      }
+      markers.push(new maplibregl.Marker(el).setLngLat(ll).addTo(map));
+    });
+
+    async function showPlace(ll) {
+      document.getElementById('placeSheet').classList.add('open');
+      document.getElementById('routeSheet').classList.remove('open');
+      try {
+        const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${ll[1]}&lon=${ll[0]}`);
+        const d = await r.json();
+        document.getElementById('placeName').innerText = d.display_name.split(',')[0];
+        document.getElementById('placeAddr').innerText = d.display_name;
+      } catch(e) {}
+    }
+
+    document.getElementById('getDirections').onclick = () => {
+      document.getElementById('placeSheet').classList.remove('open');
+      showToast("Tap destination on map");
+    };
+
+    async function fetchRoute(start, end) {
+      document.getElementById('loading').style.display = 'flex';
+      try {
+        const r = await fetch(`https://router.project-osrm.org/route/v1/driving/${start[0]},${start[1]};${end[0]},${end[1]}?overview=full&geometries=geojson`);
+        const d = await r.json();
+        document.getElementById('loading').style.display = 'none';
+        if (!d.routes?.length) return showToast("No route found");
+
+        const rt = d.routes[0];
+        document.getElementById('routeTime').innerText = Math.round(rt.duration/60) + " min";
+        document.getElementById('routeDist').innerText = (rt.distance/1000).toFixed(1) + " km";
+        document.getElementById('routeSheet').classList.add('open');
+
+        if (map.getSource('route')) {
+          map.getSource('route').setData(rt.geometry);
+        } else {
+          map.addSource('route', { type: 'geojson', data: rt.geometry });
+          map.addLayer({ id: 'route-line', type: 'line', source: 'route', paint: { 'line-color': '#1a73e8', 'line-width': 5, 'line-opacity': 0.8 } }, 'labels');
+        }
+        map.fitBounds(new maplibregl.LngLatBounds(start, start).extend(end), { padding: {top: 80, bottom: 250, left: 40, right: 40}, duration: 1000 });
+      } catch(e) { document.getElementById('loading').style.display = 'none'; }
+    }
+
+    function startNav() {
+      navMode = true;
+      document.getElementById('routeSheet').classList.remove('open');
+      map.flyTo({ center: points[0], zoom: 18, pitch: 60, duration: 2000 });
+      showToast("Navigating...");
+    }
+
+    function resetApp() {
+      navMode = false; points = []; markers.forEach(m => m.remove()); markers = [];
+      if (map.getLayer('route-line')) map.removeLayer('route-line');
+      if (map.getSource('route')) map.removeSource('route');
+      document.getElementById('placeSheet').classList.remove('open');
+      document.getElementById('routeSheet').classList.remove('open');
+      map.easeTo({ pitch: 0, bearing: 0 });
+    }
+
+    function showToast(m) {
+      const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    const inp = document.getElementById('searchInput');
+    const clr = document.getElementById('clearBtn');
+    const suggestionsBox = document.getElementById('suggestions');
+    let searchTimeout;
+
+    inp.oninput = () => {
+      const val = inp.value;
+      clr.style.display = val ? 'block' : 'none';
+
+      clearTimeout(searchTimeout);
+      if (val.length < 3) {
+        suggestionsBox.style.display = 'none';
+        return;
+      }
+
+      searchTimeout = setTimeout(() => fetchSuggestions(val), 300);
+    };
+
+    async function fetchSuggestions(query) {
+      try {
+        const b = map.getBounds();
+        const viewbox = `${b.getWest()},${b.getNorth()},${b.getEast()},${b.getSouth()}`;
+        const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&viewbox=${viewbox}`);
+        const d = await r.json();
+        if (d && d.length > 0) {
+          suggestionsBox.innerHTML = d.map(item => `
+            <div class="suggestion-item" onclick="handleSelectSuggestion('${item.display_name.replace(/'/g, "\\'")}', ${item.lon}, ${item.lat})">
+              <span class="material-icons">location_on</span>
+              <div class="suggestion-text">${item.display_name}</div>
+            </div>
+          `).join('');
+          suggestionsBox.style.display = 'flex';
+        } else {
+          suggestionsBox.style.display = 'none';
+        }
+      } catch(e) {
+        suggestionsBox.style.display = 'none';
+      }
+    }
+
+    window.handleSelectSuggestion = (name, lon, lat) => {
+      inp.value = name;
+      suggestionsBox.style.display = 'none';
+      const ll = [parseFloat(lon), parseFloat(lat)];
+      displayFoundPlace(ll, name);
+    };
+
+    function displayFoundPlace(ll, name) {
+      resetApp();
+      points.push(ll);
+      const el = document.createElement('div');
+      el.className = 'marker-origin';
+      markers.push(new maplibregl.Marker(el).setLngLat(ll).addTo(map));
+      map.flyTo({ center: ll, zoom: 15 });
+      document.getElementById('placeName').innerText = name.split(',')[0] || "Found Location";
+      document.getElementById('placeAddr').innerText = name;
+      document.getElementById('placeSheet').classList.add('open');
+    }
+
+    clr.onclick = () => {
+      inp.value = '';
+      clr.style.display = 'none';
+      suggestionsBox.style.display = 'none';
+      resetApp();
+    };
+
+    document.getElementById('searchBtn').onclick = () => performSearch(inp.value);
+    inp.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        performSearch(inp.value);
+        inp.blur();
+        suggestionsBox.style.display = 'none';
+      }
+    });
+
+    async function performSearch(query) {
+      if (!query) return;
+      suggestionsBox.style.display = 'none';
+      document.getElementById('loading').style.display = 'flex';
+      try {
+        const b = map.getBounds();
+        const viewbox = `${b.getWest()},${b.getNorth()},${b.getEast()},${b.getSouth()}`;
+        const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&viewbox=${viewbox}`);
+        const d = await r.json();
+        document.getElementById('loading').style.display = 'none';
+        if (d && d.length > 0) {
+          displayFoundPlace([parseFloat(d[0].lon), parseFloat(d[0].lat)], d[0].display_name);
+        } else {
+          showToast("No results found");
+        }
+      } catch(e) {
+        document.getElementById('loading').style.display = 'none';
+        showToast("Search failed. Check connection.");
+      }
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!document.querySelector('.search-box').contains(e.target)) {
+        suggestionsBox.style.display = 'none';
+      }
+    });
+</script>
+</body>
+</html>
