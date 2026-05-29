@@ -49,11 +49,8 @@ Example:
 
 ## APK Download
 
-Add your APK file inside the `apk` folder.
 
-Example:
-
-[Download APK](apk/ParkMate.apk)
+[Download APK](Apk/ParkMate.apk)
 
 ---
 
@@ -80,11 +77,8 @@ Example:
 
 ## Demo Video
 
-Add your demo video link here.
 
-Example:
-
-[Watch Demo Video](https://your-demo-video-link.com)
+[Watch Demo Video]([https://your-demo-video-link.com](https://drive.google.com/file/d/1d3-dS9pxcd4uVHX4uLXM7zAlvmY0yloe/view?usp=sharing))
 
 ---
 
@@ -92,7 +86,7 @@ Example:
 
 View the application privacy policy here:
 
-[View Privacy Policy](docs/Park_Mate_Privacy_Policy.docx)
+[View Privacy Policy](Docs/Privacy_Policy.docx)
 
 ---
 
